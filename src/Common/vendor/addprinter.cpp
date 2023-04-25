@@ -55,7 +55,7 @@ static QString probeDevName(const QString &serial)
             QString line = proc.readLine();
             while (!line.isEmpty()) {
                 QRegularExpressionMatch match = re.match(line);
-                if (match.hasMatch() && match.captured(1).toLower() == serial)
+                if (match.hasMatch() && match.captured(1) == serial)
                     return path;
                 line = proc.readLine();
             }
@@ -413,7 +413,7 @@ int AddCanonCAPTPrinter::addPrinter()
         return -1;
 
     m_proc.start("pkexec", QStringList {g_captexec, m_printer.strName, ppd_name, m_uri});
-
+    m_proc.waitForFinished();
     return 1;
 }
 
