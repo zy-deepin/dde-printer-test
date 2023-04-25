@@ -7,6 +7,7 @@
 #include "zsettings.h"
 #include "usbprinter/usbthread.h"
 #include "usbprinter/signalforwarder.h"
+#include "usbprinter/usbthreadhelper.h"
 
 #include <DApplication>
 #include <DLog>
@@ -37,7 +38,7 @@ void handler(int signo)
 
 int main(int argc, char *argv[])
 {
-
+    int ret = 0;
     DApplication a(argc, argv);
 
     qApp->loadTranslator();
@@ -83,6 +84,21 @@ int main(int argc, char *argv[])
         return -2;
     }
 
+    if (5 == argc && !strcmp(argv[1],"-u"))
+    {
+        if (!strcmp(argv[2],"addprinter"))
+        {
+            printf("add-printer vid=%s pid=%s\n",argv[3],argv[4]);
+            //ret = addPrinter(atoi(argv[3]),atoi(argv[4]));
+            USBThreadHelper usbhelper;
+            usbhelper.addPrinter(atoi(argv[3]),atoi(argv[4]));
+            printf("add-printer done.\n");
+            return ret;
+        }
+        
+    }
+
+#if 0
     CupsMonitor cupsMonitor;
     cupsMonitor.initTranslations();
     cupsMonitor.initSubscription();
@@ -104,5 +120,6 @@ int main(int argc, char *argv[])
 
     int ret = a.exec();
     helper.unRegisterDBus();
+#endif
     return ret;
 }
