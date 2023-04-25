@@ -12,7 +12,8 @@ SOURCES += \
     dbus/zcupsmonitor.cpp \
     dbus/helperinterface.cpp \
     usbprinter/usbthread.cpp \
-    usbprinter/signalforwarder.cpp
+    usbprinter/signalforwarder.cpp \
+    usbprinter/usbthreadhelper.cpp
 
 RESOURCES +=         resources.qrc
 
@@ -38,7 +39,8 @@ HEADERS += \
     dbus/zcupsmonitor.h \
     dbus/helperinterface.h \
     usbprinter/usbthread.h \
-    usbprinter/signalforwarder.h
+    usbprinter/signalforwarder.h \
+    usbprinter/usbthreadhelper.h
 
 DISTFILES +=
 linux {
