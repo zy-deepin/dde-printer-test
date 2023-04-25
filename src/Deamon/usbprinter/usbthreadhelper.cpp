@@ -154,6 +154,8 @@ USBThreadHelper::USBThreadHelper(QObject *parent)
     : QObject(parent)
     , m_currentUSBDevice(nullptr)
 {
+    //初始化usb.
+    libusb_init(NULL);
     /*槽函数处于主线程执行*/
     bool ret = connect(this, &USBThreadHelper:: newUSBDeviceArrived, this, &USBThreadHelper::processArrivedUSBDevice);
     if (!ret)
@@ -168,55 +170,33 @@ USBThreadHelper::USBThreadHelper(QObject *parent)
 
 USBThreadHelper::~USBThreadHelper()
 {
-
+    libusb_exit(NULL);
 }
 
 int USBThreadHelper::getUsbDevice(unsigned int vid, unsigned int pid)
 {
-    libusb_device **list;
-	struct libusb_device_descriptor desc;
 	libusb_device_handle *  handle = NULL;
-    int err;
- 
+    libusb_device* dev = NULL;
 	int status;
-	ssize_t num_devs, i;
  
 	status = 1; /* 1 device not found, 0 device found */
-
-    libusb_context *ctx;
-
-    err = libusb_init(&ctx);
-    if (err) {
-	    fprintf(stderr, "unable to initialize libusb: %i\n", err);
-	    return EXIT_FAILURE;
+    
+    handle = libusb_open_device_with_vid_pid(NULL,vid,pid);
+    if (NULL == handle) {
+        fprintf(stderr,"open usb device with vid&pid failed.\n");
+        return status;
     }
- 
-	num_devs = libusb_get_device_list(ctx, &list);
-	if (num_devs < 0)
-		goto error;
- 
-	for (i = 0; i < num_devs; ++i) {
-		libusb_device *dev = list[i];
-		libusb_open(dev,&handle);
- 
-		libusb_get_device_descriptor(dev, &desc);
-		
-        if (vid == desc.idVendor && pid == desc.idProduct) {
-            status = 0;
-
-            if (!m_usbDeviceList.contains(dev)) {
-                m_usbDeviceList.push_back(dev);
-                libusb_close(handle);
-                break;
-            }
-
-        }
-
-        libusb_close(handle);
+    dev = libusb_get_device(handle);
+    if (NULL == dev) {
+        fprintf(stderr,"open usb device with vid&pid failed.\n");
+        goto err;
     }
- 
-	libusb_free_device_list(list, 0);
-error:
+    if (!m_usbDeviceList.contains(dev)) {
+        m_usbDeviceList.push_back(dev);
+        status = 0;
+    }
+err:
+    libusb_close(handle);
 	return status;
 }
 
