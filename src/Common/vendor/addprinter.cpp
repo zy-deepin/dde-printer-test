@@ -468,7 +468,7 @@ int DefaultAddPrinter::addPrinter()
         args << "-L" << m_printer.strLocation;
 
     m_proc.start("/usr/sbin/lpadmin", args);
-
+    m_proc.waitForFinished();
     return 1;
 }
 
