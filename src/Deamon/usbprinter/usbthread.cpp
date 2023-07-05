@@ -182,6 +182,8 @@ USBThread::USBThread(QObject *parent)
     , needExit(false)
     , m_currentUSBDevice(nullptr)
 {
+    //初始化usb.
+    libusb_init(NULL);
     /*槽函数处于主线程执行*/
     bool ret = connect(this, &USBThread:: newUSBDeviceArrived, this, &USBThread::processArrivedUSBDevice);
     if (!ret)
@@ -192,11 +194,70 @@ USBThread::USBThread(QObject *parent)
     if (!ret)
         qWarning() << "connect to org.freedesktop.Notifications:" << ret;
 
+    getUsbDevice();
+    processArrivedUSBDevice();
+
 }
 
 USBThread::~USBThread()
 {
+    libusb_exit(NULL);
+}
 
+int USBThread::getUsbDevice()
+{
+    libusb_device **list;
+    struct libusb_device_descriptor desc;
+    libusb_device_handle *  handle = NULL;
+    int err;
+ 
+    int status;
+    ssize_t num_devs, i;
+    bool isUSBPrinter = false;
+ 
+    status = 1; /* 1 device not found, 0 device found */
+ 
+    num_devs = libusb_get_device_list(NULL, &list);
+    if (num_devs < 0)
+        goto error;
+ 
+    for (i = 0; i < num_devs; ++i) {
+        libusb_device *dev = list[i];
+        libusb_open(dev,&handle);
+ 
+        int ret = libusb_get_device_descriptor(dev, &desc);
+
+        if (ret < 0) {
+            qWarning() << "failed to get device descriptor";
+        }
+               
+        for (uint8_t i = 0; i < desc.bNumConfigurations; i++) {
+            struct libusb_config_descriptor *config = nullptr;
+
+            ret = libusb_get_config_descriptor(dev, i, &config);
+            if (LIBUSB_SUCCESS != ret) {
+                qWarning() << "Couldn't retrieve descriptors";
+                continue;
+            }
+
+            isUSBPrinter = isUSBPrinterDevice(config);
+
+            libusb_free_config_descriptor(config);
+
+            if (isUSBPrinter) {
+                if (!m_usbDeviceList.contains(dev)) {
+                    m_usbDeviceList.push_back(dev);
+                    status = 0;
+                }
+            }
+        }
+
+        libusb_close(handle);
+    }
+ 
+    libusb_free_device_list(list, 0);
+error:
+       return status;
 }
 
 void USBThread::run()
@@ -441,5 +502,11 @@ int USBThread::usb_arrived_callback(libusb_context *ctx, libusb_device *dev, lib
     }
 
     return (dev) ? 0 : -1;
+}
+
+void USBThread::slotExitThread()
+{
+    qInfo() << "usbthread exit";
+    quit();
 }
 

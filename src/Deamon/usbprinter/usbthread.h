@@ -44,12 +44,15 @@ private:
     void getDriver();
 
     void nextConfiguration();
+    int getUsbDevice();
 
 private slots:
     void processArrivedUSBDevice();
     bool addArrivedUSBPrinter();
     void notificationActionInvoked(uint id, const QString &msg);
     void addingJobFinished(int status);
+public slots:
+    void slotExitThread();
 signals:
     void newUSBDeviceArrived();
 
