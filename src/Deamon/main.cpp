@@ -7,7 +7,7 @@
 #include "zsettings.h"
 #include "usbprinter/usbthread.h"
 #include "usbprinter/signalforwarder.h"
-
+#include "timethread.h"
 #include <DApplication>
 #include <DLog>
 #include <DGuiApplicationHelper>
@@ -98,8 +98,15 @@ int main(int argc, char *argv[])
     forwarder.moveToThread(&forwarderThread);
     forwarderThread.start();
 
+    TimeThread timethread;
+    timethread.start();
+
     HelperInterface helper(&cupsMonitor);
     QObject::connect(&forwarder, &SignalForwarder::deviceStatusChanged, &helper, &HelperInterface::deviceStatusChanged);
+    QObject::connect(&timethread, &TimeThread::signalExitThread, &usbThread, &USBThread::slotExitThread);
+    QObject::connect(&timethread, &TimeThread::signalExitApp, &a, &DApplication::quit);
+    QObject::connect(&timethread, &TimeThread::signalExitForwarder, &forwarderThread, &QThread::quit);
+    QObject::connect(&timethread, &TimeThread::signalExitCupsMonitor, &cupsMonitor, &CupsMonitor::slotExitCupsMonitor);
     helper.registerDBus();
 
     int ret = a.exec();
