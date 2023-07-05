@@ -94,6 +94,11 @@ QString CupsMonitor::getStateString(int iState)
     return iState < m_stateStrings.count() ? m_stateStrings[iState] : QString();
 }
 
+void CupsMonitor::slotExitCupsMonitor()
+{
+    this->stop();
+}
+
 void CupsMonitor::run()
 {
     qInfo() << "Task cupsmonitor running...";

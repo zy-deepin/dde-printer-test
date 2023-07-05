@@ -37,6 +37,7 @@ public slots:
     bool isJobPurged(int id);
     QString getJobNotify(const QMap<QString, QVariant> &job);
     QString getStateString(int iState);
+    void slotExitCupsMonitor();
 
 protected:
 
