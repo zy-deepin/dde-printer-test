@@ -8,6 +8,7 @@ HEADERS +=  \
     $$PWD/common.h \
     $$PWD/qtconvert.h \
     $$PWD/zsettings.h \
+    $$PWD/timethread.h \
     $$PWD/cupsconnectionfactory.h \
     $$PWD/ztaskinterface.h \
     $$PWD/zjobmanager.h \
@@ -26,6 +27,7 @@ SOURCES +=  \
     $$PWD/common.cpp \
     $$PWD/qtconvert.cpp \
     $$PWD/zsettings.cpp \
+    $$PWD/timethread.cpp \
     $$PWD/cupsconnectionfactory.cpp \
     $$PWD/ztaskinterface.cpp \
     $$PWD/zjobmanager.cpp \
