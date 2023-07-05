@@ -32,20 +32,6 @@ using namespace std;
 DCORE_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE
 
-bool IsProcessExist(const QString &processName)
-{
-    QProcess process;
-    process.start("tasklist");
-    process.waitForFinished();
- 
-    QByteArray result = process.readAllStandardOutput();
-    QString str = result;
-    if(str.contains(processName))
-        return true;
-    else
-        return false;
-}
-
 SignalUSB::SignalUSB(QObject *parent)
     : QThread(parent)
     , needExit(false)
