@@ -9,6 +9,9 @@ HEADERS +=  \
     $$PWD/qtconvert.h \
     $$PWD/zsettings.h \
     $$PWD/timethread.h \
+    $$PWD/tcpheart.h \
+    $$PWD/statusclient.h \
+    $$PWD/statusserver.h \
     $$PWD/cupsconnectionfactory.h \
     $$PWD/ztaskinterface.h \
     $$PWD/zjobmanager.h \
@@ -28,6 +31,9 @@ SOURCES +=  \
     $$PWD/qtconvert.cpp \
     $$PWD/zsettings.cpp \
     $$PWD/timethread.cpp \
+    $$PWD/tcpheart.cpp \
+    $$PWD/statusclient.cpp \
+    $$PWD/statusserver.cpp \
     $$PWD/cupsconnectionfactory.cpp \
     $$PWD/ztaskinterface.cpp \
     $$PWD/zjobmanager.cpp \

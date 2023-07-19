@@ -64,6 +64,9 @@ DPrintersShowWindow::~DPrintersShowWindow()
         m_pSearchWindow->deleteLater();
     if (m_pSettingsDialog)
         m_pSettingsDialog->deleteLater();
+    if (m_statusclient) {
+        m_statusclient->deleteLater();
+    }
 }
 
 void DPrintersShowWindow::initUI()
@@ -442,6 +445,10 @@ void DPrintersShowWindow::showEvent(QShowEvent *event)
                                                    "deviceStatusChanged", this, SLOT(deviceStatusChanged(QDBusMessage)))) {
             qWarning() << "connect to dbus signal(deviceStatusChanged) failed";
         }
+
+        QTimer::singleShot(1000, this, [ = ]() {
+            m_statusclient = new StatusClient("0.0.0.0",6677);
+        });
     });
 }
 

@@ -9,6 +9,7 @@
 #include "renameprinterwindow.h"
 #include "qtconvert.h"
 #include "util/refreshsnmpbackendtask.h"
+#include "statusclient.h"
 
 #include <DMainWindow>
 #include <DListView>
@@ -362,6 +363,8 @@ private:
     QStringList m_ConfigingPrinterNameList;
 
     bool m_IsFirstShow;
+
+    StatusClient* m_statusclient;
 };
 
 #endif // DPRINTERSSHOWWINDOW_H

@@ -8,6 +8,7 @@
 #include "usbprinter/usbthread.h"
 #include "usbprinter/signalforwarder.h"
 #include "timethread.h"
+#include "statusserver.h"
 #include <DApplication>
 #include <DLog>
 #include <DGuiApplicationHelper>
@@ -98,7 +99,9 @@ int main(int argc, char *argv[])
     forwarder.moveToThread(&forwarderThread);
     forwarderThread.start();
 
-    TimeThread timethread;
+    StatusServer statusserver(6677);
+
+    TimeThread timethread(&statusserver);
     timethread.start();
 
     HelperInterface helper(&cupsMonitor);
