@@ -93,8 +93,6 @@ bool SignalCups::initWatcher()
     /*关联系统的打印队列，当线程退出的时候，如果有新的打印队列，重新唤醒线程*/
     bool success = conn.connect("", "/com/redhat/PrinterSpooler", "com.redhat.PrinterSpooler", "", this, SLOT(spoolerEvent(QDBusMessage)));
 
-    start();
-
     if (!success) {
         qInfo() << "failed to connect spooler dbus";
     }
